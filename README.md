@@ -1,0 +1,2 @@
+# ScratchCardView
+init
