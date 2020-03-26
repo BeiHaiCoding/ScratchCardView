@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <declare-styleable name="ScratchCardView">
+
+        <attr name="scratch_radius" format="dimension" />
+
+        <attr name="scratch_drawable" format="reference" />
+
+        <attr name="scratch_mark_color" format="color|reference" />
+
+        <attr name="scratch_finish_rate" format="integer" />
+        
+    </declare-styleable>
+    
+</resources>
