@@ -26,7 +26,7 @@ allprojects {
 
 在模块build.gradle文件下添加
 ```
-implementation 'com.github.BeiHaiCoding:ScratchCardView:0.0.1'
+implementation 'com.github.BeiHaiCoding:ScratchCardView:0.0.2'
 ```
 
 XML
@@ -53,12 +53,21 @@ Java
 -----
 
 ```
+//涂卡完成时的监听事件。
 scratchCardView.setOnScratchFinishedListener(new ScratchCardView.OnScratchFinishedListener() {
     @Override
     public void finish() {
         Toast.makeText(MainActivity.this, "刮出了一阵风", Toast.LENGTH_SHORT).show();
     }
 });
+
+//涂卡完成后的点击事件。
+scratchCardView.setOnScratchFinishedClickListener(new ScratchCardView.OnScratchFinishedClickListener() {
+            @Override
+            public void click() {
+                Toast.makeText(MainActivity.this,"您点击了背景图片",Toast.LENGTH_SHORT).show();
+            }
+        });
 ```
 
 致谢
