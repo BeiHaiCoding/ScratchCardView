@@ -1,6 +1,7 @@
 package com.czq.scratchcardview;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +15,7 @@ import android.graphics.PorterDuffXfermode;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -134,6 +136,41 @@ public class ScratchCardView extends View {
         mIsInit = true;
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int minimumWidth = getSuggestedMinimumWidth();
+        int minimumHeight = getSuggestedMinimumHeight();
+        setMeasuredDimension(measureWidth(minimumWidth, widthMeasureSpec), measureHeight(minimumHeight, heightMeasureSpec));
+
+    }
+
+    private int measureWidth(int minimumWidth, int measureSpec) {
+        int specMode = MeasureSpec.getMode(measureSpec);
+        int specSize = MeasureSpec.getSize(measureSpec);
+        //设置一个默认值，就是这个View的默认宽度为200dp，这个看我们自定义View的要求
+        int result = Math.max(minimumWidth, dp2px(200));
+        if (specMode == MeasureSpec.AT_MOST) {//相当于我们设置为wrap_content
+            result = Math.max(minimumWidth, dp2px(200));
+        } else if (specMode == MeasureSpec.EXACTLY) {//相当于我们设置为match_parent或者为一个具体的值
+            result = specSize;
+        }
+        return result;
+    }
+
+    private int measureHeight(int minimumHeight, int measureSpec) {
+        int specMode = MeasureSpec.getMode(measureSpec);
+        int specSize = MeasureSpec.getSize(measureSpec);
+        int result = Math.max(minimumHeight, dp2px(100));
+        if (specMode == MeasureSpec.AT_MOST) {
+            result = Math.max(minimumHeight, dp2px(100));
+        } else if (specMode == MeasureSpec.EXACTLY) {
+            result = specSize;
+        }
+        return result;
+    }
+
+
     private void initGrayCard() {
         grayCard = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
         grayCanvas = new Canvas(grayCard);
@@ -195,7 +232,17 @@ public class ScratchCardView extends View {
                 if (endX == mMoveX && endY == mMoveY) {
                     mPath.quadTo(15 + endX, 15 + endY, endX, endY);
                     invalidate();
+
+                    //当涂抹完成后，开启点击事件。
+                    if (scratchFinished){
+                        if (grayCard.getPixel(Math.round(endX), Math.round(endY)) == 0){
+                            if (onScratchFinishedClickListener!=null) {
+                                onScratchFinishedClickListener.click();
+                            }
+                        }
+                    }
                 }
+
                 return true;
             }
         }
@@ -268,14 +315,23 @@ public class ScratchCardView extends View {
     }
 
     private OnScratchFinishedListener onScratchFinishedListener;
+    private OnScratchFinishedClickListener onScratchFinishedClickListener;
 
     public void setOnScratchFinishedListener(OnScratchFinishedListener onScratchFinishedListener) {
         this.onScratchFinishedListener = onScratchFinishedListener;
     }
 
+    public void setOnScratchFinishedClickListener(OnScratchFinishedClickListener onScratchFinishedClickListener){
+        this.onScratchFinishedClickListener = onScratchFinishedClickListener;
+    }
+
 
     public interface OnScratchFinishedListener {
         void finish();
+    }
+
+    public interface OnScratchFinishedClickListener{
+        void click();
     }
 
 
@@ -288,6 +344,13 @@ public class ScratchCardView extends View {
         matrix.postScale(widthRate, heightRate);  //长和宽放大缩小的比例
         Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
         return resizeBmp;
+    }
+
+    /**
+     * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
+     */
+    private int dp2px(float dpValue) {
+        return (int) (0.5f + dpValue * Resources.getSystem().getDisplayMetrics().density);
     }
 
 

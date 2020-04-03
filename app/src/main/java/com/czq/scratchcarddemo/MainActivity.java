@@ -19,5 +19,12 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this,"刮出了一阵风",Toast.LENGTH_SHORT).show();
             }
         });
+
+        scratchCardView.setOnScratchFinishedClickListener(new ScratchCardView.OnScratchFinishedClickListener() {
+            @Override
+            public void click() {
+                Toast.makeText(MainActivity.this,"您点击了背景图片",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

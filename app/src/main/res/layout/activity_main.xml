@@ -11,11 +11,10 @@
     <com.czq.scratchcardview.ScratchCardView
         android:id="@+id/scv_main"
         android:layout_centerInParent="true"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:scratch_drawable="@drawable/first_lv1"
-        app:scratch_mark_color="@color/colorPrimaryDark"
-        app:scratch_finish_rate="50"
+        app:scratch_finish_rate="80"
         />
 
 </RelativeLayout>
